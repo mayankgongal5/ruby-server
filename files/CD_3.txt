@@ -1,0 +1,83 @@
+AIM-Write a C program to recognize strings under 'a*', 'a*b+', 'abb'.
+
+RESOURCE: 
+Turbo C++ 
+ 
+PROGRAM LOGIC: 
+By using transition diagram we verify input of the state. 
+If the state recognize the given pattern rule. 
+Then print string is accepted under a*/ a*b+/ abb. 
+Else print string not accepted. 
+
+PROCEDURE: 
+Go to debug -> run or press CTRL + F9 to run the program.
+
+THEORY-
+In formal language theory, pattern recognition plays a critical role in 
+understanding how strings are structured. In this context, recognizing strings
+under the patterns a*, a*b+, and abb is a fundamental exercise. The pattern 
+a* denotes any number (including zero) of the character 'a', meaning strings 
+like "", "a", "aa", etc., are valid. The pattern a*b+ extends this by allowing 
+any number of 'a's (including none) followed by one or more 'b's, meaning 
+strings like "b", "ab", "aab", "aaabbb" are accepted. Finally, abb is a 
+fixed string that strictly matches exactly "abb" and nothing else. A C program 
+to recognize these patterns involves checking the structure of the input string
+character-by-character. Functions are designed to validate each pattern 
+individually: checking for only 'a's, a combination of 'a's followed by 'b's, 
+or an exact match to "abb". Using logical conditions and loops, the program 
+verifies the conformity of the string to these defined regular expressions. 
+This approach not only reinforces the understanding of regular languages but 
+also helps in building a foundation for more advanced topics like lexical analysis 
+in compiler design. String pattern matching is a fundamental concept that finds 
+applications in various fields such as natural language processing, data validation, and parsing.
+
+CODE-
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+
+bool is_a_star(char *str) {
+    for (int i = 0; str[i]; i++) {
+        if (str[i] != 'a') {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool is_a_star_b_plus(char *str) {
+    int i = 0;
+    while (str[i] == 'a') {
+        i++;
+    }
+    if (str[i] == '\0') {
+        return false; // at least one 'b' is needed
+    }
+    while (str[i] == 'b') {
+        i++;
+    }
+    return (str[i] == '\0');
+}
+
+bool is_abb(char *str) {
+    return strcmp(str, "abb") == 0;
+}
+
+int main() {
+    char str[100];
+
+    printf("Enter a string: ");
+    scanf("%s", str);
+
+    if (is_a_star(str)) {
+        printf("The string is accepted by 'a*'.\n");
+    } else if (is_a_star_b_plus(str)) {
+        printf("The string is accepted by 'a*b+'.\n");
+    } else if (is_abb(str)) {
+        printf("The string matches 'abb'.\n");
+    } else {
+        printf("The string is not recognized.\n");
+    }
+
+    return 0;
+}

@@ -1,0 +1,163 @@
+AIM-Design a lexical analyzer for given language and the lexical analyzer should ignore redundant spaces, tabs and 
+new lines. It should also ignore comments. Although the syntax specification states that identifiers can be 
+arbitrarily long, you may restrict the length to some reasonable value. Simulate the same in C language. 
+
+THEORY-
+RESOURCE: 
+Turbo C ++ 
+PROGRAM LOGIC: 
+1. Read the input Expression 
+2. Check whether input is alphabet or digits then store it as identifier 
+3. If the input is is operator store it as symbol 
+4. Check the input for keywords 
+ 
+PROCEDURE: 
+Go to debug -> run or press CTRL + F9 to run the program 
+
+CODE -
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+#define MAX_ID_LENGTH 30
+
+// List of keywords
+const char *keywords[] = {
+    "if", "else", "while", "return", "int", "float", "char", "void", "for", "do", "break", "continue"
+};
+const int num_keywords = sizeof(keywords) / sizeof(keywords[0]);
+
+// Function to check if a string is a keyword
+int isKeyword(const char *str) {
+    for (int i = 0; i < num_keywords; i++) {
+        if (strcmp(str, keywords[i]) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// Function to skip white spaces and comments
+void skipWhitespaceAndComments(FILE *fp) {
+    int c;
+    while ((c = fgetc(fp)) != EOF) {
+        if (isspace(c)) {
+            continue;
+        } else if (c == '/') {
+            int next = fgetc(fp);
+            if (next == '/') {
+                // Single-line comment
+                while ((c = fgetc(fp)) != EOF && c != '\n');
+            } else if (next == '*') {
+                // Multi-line comment
+                while ((c = fgetc(fp)) != EOF) {
+                    if (c == '*') {
+                        if ((c = fgetc(fp)) == '/') {
+                            break;
+                        } else {
+                            ungetc(c, fp);
+                        }
+                    }
+                }
+            } else {
+                ungetc(next, fp);
+                ungetc(c, fp);
+                break;
+            }
+        } else {
+            ungetc(c, fp);
+            break;
+        }
+    }
+}
+
+// Function to identify and print tokens
+void getNextToken(FILE *fp) {
+    int c;
+    char buffer[MAX_ID_LENGTH + 1];
+    while ((c = fgetc(fp)) != EOF) {
+        // Skip whitespaces and comments
+        if (isspace(c) || c == '/') {
+            ungetc(c, fp);
+            skipWhitespaceAndComments(fp);
+            continue;
+        }
+
+        if (isalpha(c) || c == '_') {
+            // Identifier or keyword
+            int i = 0;
+            buffer[i++] = c;
+            while ((c = fgetc(fp)) != EOF && (isalnum(c) || c == '_')) {
+                if (i < MAX_ID_LENGTH) {
+                    buffer[i++] = c;
+                }
+            }
+            buffer[i] = '\0';
+            ungetc(c, fp);
+
+            if (isKeyword(buffer)) {
+                printf("Keyword: %s\n", buffer);
+            } else {
+                printf("Identifier: %s\n", buffer);
+            }
+        }
+        else if (isdigit(c)) {
+            // Number
+            int i = 0;
+            buffer[i++] = c;
+            while ((c = fgetc(fp)) != EOF && isdigit(c)) {
+                if (i < MAX_ID_LENGTH) {
+                    buffer[i++] = c;
+                }
+            }
+            buffer[i] = '\0';
+            ungetc(c, fp);
+            printf("Number: %s\n", buffer);
+        }
+        else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '=' || 
+                 c == '<' || c == '>' || c == '!' || c == '&' || c == '|') {
+            // Operators
+            int next = fgetc(fp);
+            if ((c == '=' && next == '=') || 
+                (c == '!' && next == '=') || 
+                (c == '<' && next == '=') || 
+                (c == '>' && next == '=') ||
+                (c == '&' && next == '&') ||
+                (c == '|' && next == '|')) {
+                printf("Operator: %c%c\n", c, next);
+            } else {
+                printf("Operator: %c\n", c);
+                ungetc(next, fp);
+            }
+        }
+        else if (c == ';' || c == ',' || c == '(' || c == ')' || 
+                 c == '{' || c == '}' || c == '[' || c == ']') {
+            // Punctuation
+            printf("Punctuation: %c\n", c);
+        }
+        else {
+            // Unknown character
+            printf("Unknown character: %c\n", c);
+        }
+    }
+}
+
+int main() {
+    FILE *fp;
+    char filename[100];
+
+    printf("Enter the filename: ");
+    scanf("%s", filename);
+
+    fp = fopen(filename, "r");
+    if (fp == NULL) {
+        printf("Cannot open file %s\n", filename);
+        return 1;
+    }
+
+    printf("Tokens:\n\n");
+    getNextToken(fp);
+
+    fclose(fp);
+    return 0;
+}

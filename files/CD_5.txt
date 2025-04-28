@@ -1,0 +1,70 @@
+AIM-Write a C program to simulate lexical analyzer for validating operators. 
+ 
+RESOURCE: 
+Turbo C++ 
+ 
+PROGRAM LOGIC : 
+Read the given input. 
+If the given input matches with any operator symbol. 
+Then display in terms of words of the particular symbol. 
+Else print not a operator. 
+
+PROCEDURE: 
+Go to debug -> run or press CTRL + F9 to run the program. 
+ 
+THEORY-
+In compiler design, a lexical analyzer is responsible for scanning the input source code and breaking it into meaningful 
+units called tokens. Among these tokens, operators are critical components that perform operations on variables and values. 
+Operators include symbols like +, -, *, /, =, ==, !=, and logical operators like && and ||. The goal of this program is to 
+simulate a lexical analyzer that reads an input and validates whether it is an operator or not. The program accepts a string 
+input and compares it against a list of known operator symbols using string matching (strcmp). If a match is found, it prints 
+the operator's corresponding meaning in words, such as "Addition operator" for + or "Logical AND operator" for &&. If the input 
+does not match any predefined operator, it prints "Not an operator." This simple simulation demonstrates the basic working of a 
+lexical analyzer phase where tokens are identified based on patterns. Such simulations form the foundation for building full-fledged 
+compilers and interpreters. Understanding lexical analysis is crucial because it introduces concepts like pattern matching, token 
+generation, and symbol classification which are necessary for deeper topics like parsing and semantic analysis in programming language processing.
+
+CODE-
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char op[3];
+
+    printf("Enter an operator: ");
+    scanf("%s", op);
+
+    if (strcmp(op, "+") == 0) {
+        printf("Addition operator\n");
+    } else if (strcmp(op, "-") == 0) {
+        printf("Subtraction operator\n");
+    } else if (strcmp(op, "*") == 0) {
+        printf("Multiplication operator\n");
+    } else if (strcmp(op, "/") == 0) {
+        printf("Division operator\n");
+    } else if (strcmp(op, "%") == 0) {
+        printf("Modulo operator\n");
+    } else if (strcmp(op, "==") == 0) {
+        printf("Equal to operator\n");
+    } else if (strcmp(op, "!=") == 0) {
+        printf("Not equal to operator\n");
+    } else if (strcmp(op, ">") == 0) {
+        printf("Greater than operator\n");
+    } else if (strcmp(op, "<") == 0) {
+        printf("Less than operator\n");
+    } else if (strcmp(op, ">=") == 0) {
+        printf("Greater than or equal to operator\n");
+    } else if (strcmp(op, "<=") == 0) {
+        printf("Less than or equal to operator\n");
+    } else if (strcmp(op, "&&") == 0) {
+        printf("Logical AND operator\n");
+    } else if (strcmp(op, "||") == 0) {
+        printf("Logical OR operator\n");
+    } else if (strcmp(op, "=") == 0) {
+        printf("Assignment operator\n");
+    } else {
+        printf("Not an operator\n");
+    }
+
+    return 0;
+}

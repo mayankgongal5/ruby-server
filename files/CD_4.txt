@@ -1,0 +1,61 @@
+AIM-Write a C program to test whether a given identifier is valid or not 
+
+RESOURCE: 
+Turbo C++ 
+
+PROGRAM LOGIC: 
+Read the given input string. 
+Check the initial character of the string is numerical or any special character except ‘_’ then print it is not a valid 
+identifier. 
+Otherwise print it as valid identifier if remaining characters of string doesn’t contains any special characters 
+except ‘_’. 
+
+PROCEDURE: 
+Go to debug -> run or press CTRL + F9 to run the program. 
+
+THEORY-
+In the C programming language, an identifier is the name used to identify variables, functions, arrays, 
+and other user-defined elements. A valid identifier must follow certain rules. It can only begin with an 
+alphabetic character (either uppercase or lowercase) or an underscore _. The first character must not be 
+a digit or any other special character. After the first character, the identifier may contain letters, 
+digits, and underscores, but no special symbols like @, #, %, or whitespace characters. Based on this, 
+the program to check a valid identifier first reads the input string and verifies the first character. 
+If the first character is a number or any special character (other than _), the identifier is immediately 
+considered invalid. Otherwise, the program checks each subsequent character to ensure it is either a letter, 
+a digit, or an underscore. If any illegal character is detected, the string is flagged as invalid. This validation 
+process ensures that identifiers conform to the syntax rules defined by the C language standards, which help avoid 
+compilation errors. Understanding this rule is fundamental for beginner programmers, as proper naming conventions 
+and valid identifiers are crucial in writing clear, maintainable, and error-free code.
+
+CODE-
+#include <stdio.h>
+#include <ctype.h> // for isalpha(), isdigit()
+
+int main() {
+    char str[100];
+    int i, valid = 1;
+
+    printf("Enter an identifier: ");
+    scanf("%s", str);
+
+    // Check first character
+    if (!(isalpha(str[0]) || str[0] == '_')) {
+        valid = 0;
+    } else {
+        // Check the rest of the characters
+        for (i = 1; str[i] != '\0'; i++) {
+            if (!(isalpha(str[i]) || isdigit(str[i]) || str[i] == '_')) {
+                valid = 0;
+                break;
+            }
+        }
+    }
+
+    if (valid) {
+        printf("It is a valid identifier.\n");
+    } else {
+        printf("It is not a valid identifier.\n");
+    }
+
+    return 0;
+}

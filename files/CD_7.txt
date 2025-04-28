@@ -1,0 +1,117 @@
+AIM- 
+Write a C program for implementing the functionalities of predictive parser for the mini language specified in 
+Note 1. 
+
+RESOURCE: 
+Turbo C++ 
+
+PROGRAM LOGIC: 
+Read the input string. 
+By using the FIRST AND FOLLOW values. 
+Verify the FIRST of non terminal and insert the production in the FIRST value 
+If we have any @ terms in FIRST then insert the productions in FOLLOW values 
+Constructing the predictive parser table 
+
+PROCEDURE: 
+Go to debug -> run or press CTRL + F9 to run the program. 
+
+THEORY-
+Predictive parsing is a top-down parsing technique that uses a lookahead symbol to decide which production to apply.
+It is mainly used for grammars that are LL(1), meaning it parses from Left to right producing a Leftmost derivation 
+with 1 token lookahead. In predictive parsing, we use FIRST and FOLLOW sets to create a parsing table. The FIRST set 
+of a non-terminal represents all possible terminals that can begin its derivation. The FOLLOW set represents all terminals 
+that can appear immediately to the right of a non-terminal in some "sentential" form. The parsing table is filled by inserting 
+productions according to these sets. If a production leads to ε (null production), we add it into the FOLLOW set columns.
+During parsing, the algorithm reads the input and stack symbols. If a terminal matches, it pops the symbol and moves the 
+input pointer. If a non-terminal is on top, it uses the table to expand it based on the input symbol. If any mismatch occurs 
+or no rule applies, it reports an error. When both the stack and input reach $, the input string is successfully parsed. 
+Predictive parsing ensures efficient syntax checking and forms the backbone for building recursive-descent parsers and compilers.
+
+CODE-
+#include <stdio.h>
+#include <string.h>
+
+char table[5][6][10] = {
+    /*    id     +      *      (      )      $    */
+    { "TE'", "",   "",   "TE'", "",    ""   }, // E
+    { "",   "+TE'", "", "",    "@",   "@"  }, // E'
+    { "FT'", "",   "",   "FT'", "",    ""  }, // T
+    { "",   "@",  "*FT'", "",   "@",   "@"  }, // T'
+    { "id", "",   "",   "(E)", "",    ""   }  // F
+};
+
+int getRow(char nonTerminal) {
+    switch(nonTerminal) {
+        case 'E': return 0;
+        case 'e': return 1; // E'
+        case 'T': return 2;
+        case 't': return 3; // T'
+        case 'F': return 4;
+    }
+    return -1;
+}
+
+int getCol(char terminal) {
+    switch(terminal) {
+        case 'i': return 0; // id
+        case '+': return 1;
+        case '*': return 2;
+        case '(': return 3;
+        case ')': return 4;
+        case '$': return 5;
+    }
+    return -1;
+}
+
+void parseString(char input[]) {
+    char stack[100];
+    int top = 0, i = 0;
+    stack[top] = '$';
+    top++;
+    stack[top] = 'E';
+
+    printf("\nParsing steps:\n");
+
+    while (top >= 0) {
+        char stackTop = stack[top];
+        char currentInput = input[i];
+
+        if (stackTop == currentInput) {
+            top--;
+            i++;
+            if (stackTop == '$') {
+                printf("\nString accepted.\n");
+                return;
+            }
+        } else if (stackTop >= 'A' && stackTop <= 'Z' || stackTop >= 'a' && stackTop <= 'z') {
+            int row = getRow(stackTop);
+            int col = getCol(currentInput);
+            if (row == -1 || col == -1 || strcmp(table[row][col], "") == 0) {
+                printf("\nError: No rule to apply.\n");
+                return;
+            }
+
+            printf("%c -> %s\n", stackTop, table[row][col]);
+
+            top--;
+            if (strcmp(table[row][col], "@") != 0) {
+                int len = strlen(table[row][col]);
+                for (int j = len - 1; j >= 0; j--) {
+                    stack[++top] = table[row][col][j];
+                }
+            }
+        } else {
+            printf("\nError: Unexpected symbol.\n");
+            return;
+        }
+    }
+    printf("\nString rejected.\n");
+}
+
+int main() {
+    char input[100];
+    printf("Enter the input string ending with $: ");
+    scanf("%s", input);
+    parseString(input);
+    return 0;
+}

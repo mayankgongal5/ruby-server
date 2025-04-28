@@ -1,0 +1,49 @@
+AIM- Write a C program to identify whether a given line is a comment or not.
+
+RESOURCE-
+Turbo C++ 
+
+PROGRAM LOGIC- 
+Read the input string. 
+Check whether the string is starting with ‘/’ and check next character is ‘/’ or’*’. 
+If condition satisfies print comment. 
+Else not a comment. 
+
+PROCEDURE- 
+Go to debug -> run or press CTRL + F9 to run the program.
+
+THEORY-
+In the C programming language, comments are non-executable parts of the source code used to explain the logic, 
+make notes for the programmer, or temporarily disable parts of the code during debugging. There are two types of
+comments in C: single-line comments and multi-line comments. Single-line comments start with a double forward slash (//) 
+and continue until the end of the line. Multi-line comments begin with a /* and end with a */, allowing them to span several 
+lines. Identifying whether a given line is a comment is useful for building basic compilers, code analyzers, or formatting tools. 
+In a simple C program to detect comments, the input line is first checked for the presence of a / as the first character. If found, 
+the second character determines the type: if it is another /, it is a single-line comment; if it is an asterisk *, it indicates the 
+start of a multi-line comment. Any other character sequence following a / is not treated as a comment. This simple detection does not 
+handle full multi-line comment blocks or edge cases but serves as a basic demonstration of string analysis and pattern recognition in C programming. 
+Such programs help new programmers understand input parsing and condition checking.
+
+CODE-
+#include <stdio.h>
+
+int main() {
+    char line[1000];
+
+    printf("Enter a line of code: ");
+    fgets(line, sizeof(line), stdin);
+
+    if (line[0] == '/') {
+        if (line[1] == '/') {
+            printf("It is a single-line comment.\n");
+        } else if (line[1] == '*') {
+            printf("It is the start of a multi-line comment.\n");
+        } else {
+            printf("It is not a comment.\n");
+        }
+    } else {
+        printf("It is not a comment.\n");
+    }
+
+    return 0;
+}
