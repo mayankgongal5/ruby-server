@@ -1,14 +1,14 @@
 services:
-  - type: web
-    name: ruby-server
-    runtime: ruby
-    plan: free
-    buildCommand: bundle install && mkdir -p files
-    startCommand: bundle exec puma -C config/puma.rb
-    envVars:
-      - key: RAILS_MASTER_KEY
-        sync: false
-      - key: RAILS_ENV
-        value: production
-      - key: RAILS_LOG_TO_STDOUT
-        value: true
+- type: web
+  name: ruby-server
+  runtime: ruby
+  plan: free
+  buildCommand: bundle install && mkdir -p files
+  startCommand: bundle exec puma -C config/puma.rb
+  envVars:
+  - key: RAILS_MASTER_KEY
+    sync: false
+  - key: RAILS_ENV
+    value: production
+  - key: RAILS_LOG_TO_STDOUT
+    value: "true"
